@@ -4,26 +4,47 @@ import { Badge } from "@/components/ui/badge";
 import { Crown, Check, X, ArrowLeft, MessageCircle, Heart, Sparkles, Shield, Zap, Clock } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { ThemeToggle } from "./ThemeToggle";
+import { useAuth } from "@/hooks/useAuth";
+import { useSubscription } from "@/hooks/useSubscription";
+import { useToast } from "@/hooks/use-toast";
 
 const SubscriptionPage = () => {
   const navigate = useNavigate();
-  
-  // Simular verificação de usuário logado
-  const isUserLoggedIn = () => {
-    // Aqui você verificaria se o usuário está logado (token, sessão, etc.)
-    // Por enquanto, simulando que não está logado
-    return false;
-  };
+  const { isAuthenticated } = useAuth();
+  const { createSubscription } = useSubscription();
+  const { toast } = useToast();
 
-  const handleSubscriptionClick = (planId: string) => {
-    if (!isUserLoggedIn()) {
-      // Redirecionar para página de cadastro se não estiver logado
+  const handleSubscriptionClick = async (planId: string) => {
+    if (!isAuthenticated) {
       navigate('/register');
       return;
     }
     
-    // Se estiver logado, prosseguir com o checkout
-    window.open('https://checkout.com', '_blank');
+    if (planId === 'free') {
+      // Create free plan subscription
+      const { error } = await createSubscription('free');
+      if (error) {
+        toast({
+          title: "Erro",
+          description: "Erro ao ativar plano gratuito. Tente novamente.",
+          variant: "destructive",
+        });
+        return;
+      }
+      toast({
+        title: "Plano ativado!",
+        description: "Seu plano gratuito foi ativado com sucesso!",
+      });
+      navigate('/dashboard');
+    } else {
+      // For paid plans, redirect to checkout (or payment processor)
+      toast({
+        title: "Redirecionando...",
+        description: "Você será redirecionado para o checkout.",
+      });
+      // Here you would integrate with Stripe, PayPal, etc.
+      window.open('https://checkout.com', '_blank');
+    }
   };
 
   const plans = [

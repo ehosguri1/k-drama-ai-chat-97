@@ -3,9 +3,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Heart, MessageCircle, Star, Sparkles, Crown, Clock, Shield, Zap } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 
 const LandingPage = () => {
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   const features = [
     { icon: <MessageCircle className="h-5 w-5" />, text: "Converse 24/7" },
     { icon: <Sparkles className="h-5 w-5" />, text: "Experiência imersiva" },
@@ -62,12 +65,20 @@ const LandingPage = () => {
         </Link>
         <div className="flex items-center gap-2">
           <ThemeToggle />
-          <Button variant="ghost" asChild>
-            <a href="/auth">Login</a>
-          </Button>
-          <Button variant="default" asChild>
-            <a href="/auth">Cadastrar</a>
-          </Button>
+          {isAuthenticated ? (
+            <Button variant="default" onClick={() => navigate('/dashboard')}>
+              Dashboard
+            </Button>
+          ) : (
+            <>
+              <Button variant="ghost" onClick={() => navigate('/login')}>
+                Login
+              </Button>
+              <Button variant="default" onClick={() => navigate('/register')}>
+                Cadastrar
+              </Button>
+            </>
+          )}
         </div>
       </nav>
 
@@ -92,15 +103,18 @@ const LandingPage = () => {
               variant="default" 
               size="lg" 
               className="text-lg px-8 py-4"
-              asChild
+              onClick={() => isAuthenticated ? navigate('/subscription') : navigate('/register')}
             >
-              <a href="/subscription">
-                <Sparkles className="h-5 w-5" />
-                🚀 Ver Planos
-              </a>
+              <Sparkles className="h-5 w-5" />
+              🚀 {isAuthenticated ? 'Ver Planos' : 'Começar Grátis'}
             </Button>
-            <Button variant="outline" size="lg" className="text-lg px-8 py-4" asChild>
-              <a href="/auth">Ver Demonstração</a>
+            <Button 
+              variant="outline" 
+              size="lg" 
+              className="text-lg px-8 py-4" 
+              onClick={() => isAuthenticated ? navigate('/dashboard') : navigate('/register')}
+            >
+              Ver Demonstração
             </Button>
           </div>
 
@@ -257,12 +271,10 @@ const LandingPage = () => {
           variant="default" 
           size="lg" 
           className="text-xl px-12 py-6"
-          asChild
+          onClick={() => isAuthenticated ? navigate('/subscription') : navigate('/register')}
         >
-          <a href="/subscription">
-            <Crown className="h-6 w-6" />
-            🚀 Ver Planos
-          </a>
+          <Crown className="h-6 w-6" />
+          🚀 {isAuthenticated ? 'Ver Planos' : 'Começar Grátis'}
         </Button>
           
           <p className="text-sm text-muted-foreground mt-4">

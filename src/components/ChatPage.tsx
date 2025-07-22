@@ -4,8 +4,11 @@ import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Send, Heart, Smile, Settings, MoreVertical, Phone, Video, Star } from "lucide-react";
-import { Link, useParams } from "react-router-dom";
+import { ArrowLeft, Send, Heart, Smile, Settings, MoreVertical, Phone, Video, Star, Crown } from "lucide-react";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import { useSubscription } from "@/hooks/useSubscription";
+import { supabase } from "@/integrations/supabase/client";
 import idol1 from "@/assets/idol-1.jpg";
 import idol2 from "@/assets/idol-2.jpg";
 import idol3 from "@/assets/idol-3.jpg";
@@ -20,9 +23,25 @@ interface Message {
 
 const ChatPage = () => {
   const { idolId } = useParams();
+  const navigate = useNavigate();
+  const { user, loading: authLoading } = useAuth();
+  const { isPremium, loading: subLoading } = useSubscription();
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!authLoading && !subLoading) {
+      if (!user) {
+        navigate('/auth');
+        return;
+      }
+      if (!isPremium()) {
+        navigate('/subscription');
+        return;
+      }
+    }
+  }, [user, isPremium, authLoading, subLoading, navigate]);
 
   // Simular dados do idol baseado no ID
   const idols = {
@@ -54,37 +73,55 @@ const ChatPage = () => {
 
   const currentIdol = idols[idolId as keyof typeof idols] || idols['1'];
 
-  // Mensagens iniciais simuladas
+  // Load messages from database
   useEffect(() => {
-    const initialMessages: Message[] = [
-      {
-        id: 1,
-        text: `Oi! Que bom te ver aqui! 💜 Como você está hoje?`,
-        sender: 'idol',
-        timestamp: new Date(Date.now() - 60000),
-      },
-      {
-        id: 2,
-        text: "Oi!! Estou bem, obrigada! E você?",
-        sender: 'user',
-        timestamp: new Date(Date.now() - 30000),
-      },
-      {
-        id: 3,
-        text: `Estou ótimo! Acabei de terminar de gravar e estava pensando em você. O que você tem feito de interessante?`,
-        sender: 'idol',
-        timestamp: new Date(Date.now() - 15000),
+    if (user && idolId) {
+      loadChatHistory();
+    }
+  }, [user, idolId]);
+
+  const loadChatHistory = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('chat_messages')
+        .select('*')
+        .eq('user_id', user?.id)
+        .eq('idol_id', idolId)
+        .order('created_at', { ascending: true });
+
+      if (error) throw error;
+
+      if (data && data.length > 0) {
+        const loadedMessages: Message[] = data.map(msg => ({
+          id: parseInt(msg.id.split('-')[0]),
+          text: msg.message,
+          sender: msg.sender as 'user' | 'idol',
+          timestamp: new Date(msg.created_at),
+        }));
+        setMessages(loadedMessages);
+      } else {
+        // Load initial messages if no chat history
+        const initialMessages: Message[] = [
+          {
+            id: 1,
+            text: `Oi! Que bom te ver aqui! 💜 Como você está hoje?`,
+            sender: 'idol',
+            timestamp: new Date(Date.now() - 60000),
+          }
+        ];
+        setMessages(initialMessages);
       }
-    ];
-    setMessages(initialMessages);
-  }, []);
+    } catch (error) {
+      console.error('Error loading chat history:', error);
+    }
+  };
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const handleSendMessage = () => {
-    if (!message.trim()) return;
+  const handleSendMessage = async () => {
+    if (!message.trim() || !user || !idolId) return;
 
     const newMessage: Message = {
       id: Date.now(),
@@ -94,10 +131,23 @@ const ChatPage = () => {
     };
 
     setMessages(prev => [...prev, newMessage]);
+    
+    // Save user message to database
+    try {
+      await supabase.from('chat_messages').insert({
+        user_id: user.id,
+        idol_id: idolId,
+        message: message,
+        sender: 'user'
+      });
+    } catch (error) {
+      console.error('Error saving user message:', error);
+    }
+
     setMessage("");
 
     // Simular resposta da IA após um breve delay
-    setTimeout(() => {
+    setTimeout(async () => {
       const responses = [
         "Que interessante! Me conta mais sobre isso 😊",
         "Adoro conversar com você! Você sempre tem coisas legais para falar ✨",
@@ -119,6 +169,18 @@ const ChatPage = () => {
       };
 
       setMessages(prev => [...prev, aiResponse]);
+
+      // Save AI response to database
+      try {
+        await supabase.from('chat_messages').insert({
+          user_id: user.id,
+          idol_id: idolId,
+          message: randomResponse,
+          sender: 'idol'
+        });
+      } catch (error) {
+        console.error('Error saving AI message:', error);
+      }
     }, 1000 + Math.random() * 2000);
   };
 
@@ -152,6 +214,19 @@ const ChatPage = () => {
       minute: '2-digit' 
     });
   };
+
+  if (authLoading || subLoading) {
+    return (
+      <div className="h-screen bg-gradient-hero flex items-center justify-center">
+        <div className="text-center">
+          <Crown className="h-8 w-8 text-kpop-purple mx-auto mb-4 animate-pulse" />
+          <p className="text-muted-foreground">Carregando chat...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user || !isPremium()) return null;
 
   return (
     <div className="h-screen bg-gradient-hero flex flex-col">

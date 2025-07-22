@@ -1,17 +1,40 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Crown, MessageCircle, Settings, LogOut, Star, Heart, Sparkles, Lock } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import { useSubscription } from "@/hooks/useSubscription";
 import idol1 from "@/assets/idol-1.jpg";
 import idol2 from "@/assets/idol-2.jpg";
 import idol3 from "@/assets/idol-3.jpg";
 
 const Dashboard = () => {
-  const [hasSubscription] = useState(false); // Simular estado de assinatura
+  const { user, signOut, loading: authLoading } = useAuth();
+  const { subscription, isPremium, loading: subLoading } = useSubscription();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!authLoading && !user) {
+      navigate('/auth');
+    }
+  }, [user, authLoading, navigate]);
+
+  if (authLoading || subLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-hero flex items-center justify-center">
+        <div className="text-center">
+          <Crown className="h-8 w-8 text-kpop-purple mx-auto mb-4 animate-pulse" />
+          <p className="text-muted-foreground">Carregando...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) return null;
 
   const idols = [
     {
@@ -44,18 +67,16 @@ const Dashboard = () => {
   ];
 
   const handleChatClick = (idolId: number) => {
-    if (!hasSubscription) {
-      // Redirecionar para página de assinatura
-      window.location.href = '/subscription';
+    if (!isPremium()) {
+      navigate('/subscription');
     } else {
-      // Abrir chat
-      window.location.href = `/chat/${idolId}`;
+      navigate(`/chat/${idolId}`);
     }
   };
 
-  const handleLogout = () => {
-    // Simular logout
-    window.location.href = '/';
+  const handleLogout = async () => {
+    await signOut();
+    navigate('/');
   };
 
   return (
@@ -71,10 +92,10 @@ const Dashboard = () => {
           </Link>
 
           <div className="flex items-center gap-4">
-            {hasSubscription && (
+            {isPremium() && (
               <Badge className="bg-kpop-gold/20 text-kpop-gold border-kpop-gold/30">
                 <Crown className="h-3 w-3 mr-1" />
-                Premium
+                {subscription?.plan_id === 'dorameira' ? 'Dorameira' : 'Básico'}
               </Badge>
             )}
             
@@ -95,10 +116,10 @@ const Dashboard = () => {
         {/* Welcome Section */}
         <div className="mb-8 text-center md:text-left">
           <h1 className="text-3xl md:text-4xl font-bold mb-2 text-foreground">
-            Olá, seja bem-vinda! 💜
+            Olá, {user.user_metadata?.display_name || 'bem-vinda'}! 💜
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground">
-            {hasSubscription 
+            {isPremium() 
               ? 'Escolha com quem você quer conversar hoje' 
               : 'Escolha seu plano ideal e comece a conversar'
             }
@@ -106,7 +127,7 @@ const Dashboard = () => {
         </div>
 
         {/* Subscription Status */}
-        {!hasSubscription && (
+        {!isPremium() && (
           <Card className="mb-8 bg-gradient-primary text-white border-0 shadow-glow">
             <CardContent className="p-6">
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -122,7 +143,7 @@ const Dashboard = () => {
                   variant="secondary" 
                   size="lg"
                   className="w-full md:w-auto"
-                  onClick={() => window.location.href = '/subscription'}
+                  onClick={() => navigate('/subscription')}
                 >
                   Ver Planos
                 </Button>
@@ -147,7 +168,7 @@ const Dashboard = () => {
                     idol.online ? 'bg-green-500' : 'bg-gray-400'
                   }`} />
                   
-                  {!hasSubscription && (
+                  {!isPremium() && (
                     <div className="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center">
                       <Lock className="h-8 w-8 text-white" />
                     </div>
@@ -182,12 +203,12 @@ const Dashboard = () => {
                 </div>
 
                 <Button 
-                  variant={hasSubscription ? "default" : "outline"} 
+                  variant={isPremium() ? "default" : "outline"} 
                   className="w-full group-hover:scale-105 transition-transform"
                   onClick={() => handleChatClick(idol.id)}
-                  disabled={!idol.online && hasSubscription}
+                  disabled={!idol.online && isPremium()}
                 >
-                  {!hasSubscription ? (
+                  {!isPremium() ? (
                     <>
                       <Lock className="h-4 w-4 mr-2" />
                       Assinar para conversar
@@ -224,7 +245,7 @@ const Dashboard = () => {
         </Card>
 
         {/* Quick Stats for Premium Users */}
-        {hasSubscription && (
+        {isPremium() && (
           <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
             <Card className="bg-gradient-card border-kpop-purple/20">
               <CardContent className="p-4 text-center">
