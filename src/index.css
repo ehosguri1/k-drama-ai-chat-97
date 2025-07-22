@@ -1,0 +1,160 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* K-pop/Dorama inspired design system with elegant dark theme and soft pastels */
+
+@layer base {
+  :root {
+    /* Light theme - soft pastel gradient background */
+    --background: 35 50% 97%;
+    --foreground: 240 10% 3.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+
+    --primary: 280 70% 50%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 280 80% 70%;
+
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+
+    --accent: 260 60% 88%;
+    --accent-foreground: 240 5.9% 10%;
+
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 280 70% 50%;
+
+    /* K-pop specific colors - improved contrast for light mode */
+    --kpop-pink: 340 80% 60%;
+    --kpop-purple: 280 70% 55%;
+    --kpop-lavender: 260 50% 70%;
+    --kpop-gold: 45 90% 50%;
+    --kpop-silver: 210 20% 70%;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(280 70% 50%), hsl(320 70% 60%));
+    --gradient-hero: linear-gradient(135deg, hsl(35 50% 97%), hsl(320 30% 95%), hsl(280 25% 96%));
+    --gradient-card: linear-gradient(145deg, hsl(35 40% 98%), hsl(320 20% 97%));
+    
+    /* Shadows */
+    --shadow-elegant: 0 10px 30px -10px hsl(320 60% 55% / 0.3);
+    --shadow-glow: 0 0 40px hsl(320 70% 75% / 0.4);
+    --shadow-card: 0 4px 20px hsl(320 30% 70% / 0.15);
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    /* Dark theme - elegant with K-pop accents and improved contrast */
+    --background: 300 15% 8%;
+    --foreground: 320 20% 96%;
+
+    --card: 300 15% 10%;
+    --card-foreground: 320 20% 96%;
+
+    --popover: 300 15% 10%;
+    --popover-foreground: 320 20% 96%;
+
+    --primary: 320 70% 65%;
+    --primary-foreground: 300 15% 8%;
+    --primary-glow: 320 80% 80%;
+
+    --secondary: 300 15% 18%;
+    --secondary-foreground: 320 20% 95%;
+
+    --muted: 300 10% 20%;
+    --muted-foreground: 320 15% 75%;
+
+    --accent: 280 50% 30%;
+    --accent-foreground: 320 20% 95%;
+
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 300 10% 25%;
+    --input: 300 10% 25%;
+    --ring: 320 70% 65%;
+
+    /* Dark theme K-pop colors */
+    --kpop-pink: 340 80% 75%;
+    --kpop-purple: 280 70% 75%;
+    --kpop-lavender: 260 50% 80%;
+    --kpop-gold: 45 90% 70%;
+    --kpop-silver: 210 20% 80%;
+
+    /* Dark theme gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(320 70% 65%), hsl(280 70% 75%));
+    --gradient-hero: linear-gradient(135deg, hsl(300 15% 8%), hsl(320 25% 12%), hsl(280 30% 15%));
+    --gradient-card: linear-gradient(145deg, hsl(300 15% 10%), hsl(300 10% 20%));
+    
+    /* Dark theme shadows */
+    --shadow-elegant: 0 10px 30px -10px hsl(320 70% 65% / 0.5);
+    --shadow-glow: 0 0 40px hsl(320 80% 80% / 0.3);
+    --shadow-card: 0 4px 20px hsl(300 30% 5% / 0.5);
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+  
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--primary));
+    border-radius: 3px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--primary-glow));
+  }
+}
