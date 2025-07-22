@@ -2,10 +2,30 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Crown, Check, X, ArrowLeft, MessageCircle, Heart, Sparkles, Shield, Zap, Clock } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ThemeToggle } from "./ThemeToggle";
 
 const SubscriptionPage = () => {
+  const navigate = useNavigate();
+  
+  // Simular verificação de usuário logado
+  const isUserLoggedIn = () => {
+    // Aqui você verificaria se o usuário está logado (token, sessão, etc.)
+    // Por enquanto, simulando que não está logado
+    return false;
+  };
+
+  const handleSubscriptionClick = (planId: string) => {
+    if (!isUserLoggedIn()) {
+      // Redirecionar para página de cadastro se não estiver logado
+      navigate('/register');
+      return;
+    }
+    
+    // Se estiver logado, prosseguir com o checkout
+    window.open('https://checkout.com', '_blank');
+  };
+
   const plans = [
     {
       id: "free",
@@ -29,11 +49,11 @@ const SubscriptionPage = () => {
     {
       id: "basic",
       name: "Básico",
-      price: "R$ 19,90",
+      price: "R$ 24,90",
       period: "por mês",
       description: "Para fãs iniciantes",
-      badge: null,
-      color: "secondary",
+      badge: "🔥 Popular",
+      color: "accent",
       features: [
         { text: "50 mensagens por dia", included: true },
         { text: "5 personagens disponíveis", included: true },
@@ -43,25 +63,6 @@ const SubscriptionPage = () => {
         { text: "Acesso a todos os ídolos", included: false },
         { text: "Conversas ilimitadas", included: false },
         { text: "Recursos exclusivos", included: false },
-      ]
-    },
-    {
-      id: "fan",
-      name: "Fã",
-      price: "R$ 24,90",
-      period: "por mês",
-      description: "Para verdadeiros fãs",
-      badge: "🔥 Popular",
-      color: "accent",
-      features: [
-        { text: "200 mensagens por dia", included: true },
-        { text: "15 personagens disponíveis", included: true },
-        { text: "IA premium", included: true },
-        { text: "Histórico ilimitado", included: true },
-        { text: "Personalização de chat", included: true },
-        { text: "Notificações personalizadas", included: true },
-        { text: "Conversas ilimitadas", included: false },
-        { text: "Acesso antecipado", included: false },
       ]
     },
     {
@@ -100,7 +101,6 @@ const SubscriptionPage = () => {
     const values = {
       free: ["3", "1", "Básica", "Limitado", "❌", "❌", "❌", "❌"],
       basic: ["50", "5", "Avançada", "✅", "Básica", "❌", "❌", "❌"],
-      fan: ["200", "15", "Premium", "✅", "✅", "✅", "❌", "❌"],
       dorameira: ["Ilimitadas", "Todos", "Alta qualidade", "✅", "✅", "✅", "✅", "✅"]
     };
     return values[planId as keyof typeof values][featureIndex];
@@ -138,7 +138,7 @@ const SubscriptionPage = () => {
 
       {/* Pricing Cards */}
       <section className="container mx-auto px-4 py-12">
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
           {plans.map((plan) => (
             <Card 
               key={plan.id} 
@@ -222,7 +222,7 @@ const SubscriptionPage = () => {
                   variant={plan.id === 'dorameira' ? 'secondary' : 'default'}
                   size="lg" 
                   className="w-full mt-6 font-semibold"
-                  onClick={() => window.open('https://checkout.com', '_blank')}
+                  onClick={() => handleSubscriptionClick(plan.id)}
                 >
                   {plan.id === 'free' ? 'Começar Grátis' : '🚀 Assinar Agora'}
                 </Button>
@@ -327,6 +327,7 @@ const SubscriptionPage = () => {
               variant="outline"
               size="lg" 
               className="text-lg px-8 py-4"
+              onClick={() => handleSubscriptionClick('free')}
             >
               Começar Grátis
             </Button>
@@ -334,7 +335,7 @@ const SubscriptionPage = () => {
               variant="default"
               size="lg" 
               className="text-lg px-8 py-4"
-              onClick={() => window.open('https://checkout.com', '_blank')}
+              onClick={() => handleSubscriptionClick('dorameira')}
             >
               <Crown className="h-5 w-5" />
               Assinar Dorameira

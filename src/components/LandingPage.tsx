@@ -3,12 +3,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Heart, MessageCircle, Star, Sparkles, Crown, Clock, Shield, Zap } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
-import PlanToggle, { PlanType } from "./PlanToggle";
-import { useState } from "react";
 import { Link } from "react-router-dom";
 
 const LandingPage = () => {
-  const [currentPlan, setCurrentPlan] = useState<PlanType>('free');
   const features = [
     { icon: <MessageCircle className="h-5 w-5" />, text: "Converse 24/7" },
     { icon: <Sparkles className="h-5 w-5" />, text: "Experiência imersiva" },
@@ -280,8 +277,6 @@ const LandingPage = () => {
         <p>&copy; 2025 IdolChat. Feito com 💜 para fãs de k-pop e doramas.</p>
       </footer>
 
-      {/* Plan Toggle for Development */}
-      <PlanToggle onPlanChange={setCurrentPlan} />
     </div>
   );
 };
