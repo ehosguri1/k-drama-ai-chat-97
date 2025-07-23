@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Crown, Eye, EyeOff, Loader2 } from "lucide-react";
+import { Crown, Eye, EyeOff, Loader2, ArrowLeft } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -115,6 +115,17 @@ const AuthPage = ({ mode }: AuthPageProps) => {
     <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
+          <div className="absolute top-4 left-4">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => navigate('/')}
+              className="flex items-center gap-2"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Voltar
+            </Button>
+          </div>
           <div className="flex items-center justify-center gap-2 mb-4">
             <Crown className="h-8 w-8 text-kpop-purple" />
             <span className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">

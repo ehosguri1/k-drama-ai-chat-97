@@ -98,6 +98,20 @@ const LandingPage = () => {
             e ídolos de k-pop favoritos. Assinatura mensal com acesso ilimitado.
           </p>
 
+          {/* VSL Video */}
+          <div className="mb-8 max-w-4xl mx-auto">
+            <div className="relative aspect-video rounded-lg overflow-hidden shadow-elegant">
+              <video 
+                controls 
+                className="w-full h-full object-cover"
+                poster="/placeholder.svg"
+              >
+                <source src="https://rhpouhvmgfedbcfeaeic.supabase.co/storage/v1/object/sign/vsl/VSLdoIdolchat.mp4?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9lNWRlMWI1Ni1mMDM5LTQ2MGEtYTdhNC03MzA1MjQwYWFjOTciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ2c2wvVlNMZG9JZG9sY2hhdC5tcDQiLCJpYXQiOjE3NTMyMzkwMjMsImV4cCI6MjEzMTY3MTAyM30.qdq4vj3igwdaSUkZJTUAfcOCQu0Ipsp18gf5ieWO9NQ" type="video/mp4" />
+                Seu navegador não suporta o elemento de vídeo.
+              </video>
+            </div>
+          </div>
+
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
             <Button 
               variant="default" 

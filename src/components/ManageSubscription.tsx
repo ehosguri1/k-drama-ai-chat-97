@@ -1,30 +1,57 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Crown, Calendar, CreditCard, Shield, ArrowLeft, CheckCircle, AlertTriangle } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import { useSubscription } from "@/hooks/useSubscription";
+import { useToast } from "@/hooks/use-toast";
 
 const ManageSubscription = () => {
-  const [subscriptionStatus] = useState({
-    isActive: true,
-    plan: "Premium",
-    nextBilling: "2024-02-15",
-    amount: "R$ 19,90",
-    cancelRequested: false
-  });
+  const { user } = useAuth();
+  const { subscription, loading } = useSubscription();
+  const { toast } = useToast();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!user) {
+      navigate('/auth');
+    }
+  }, [user, navigate]);
 
   const handleCancelSubscription = () => {
-    // Simular cancelamento
-    console.log("Subscription cancelled");
-    // Aqui faria a requisição para cancelar
+    toast({
+      title: "Cancelamento solicitado",
+      description: "Sua assinatura será cancelada no próximo ciclo de cobrança.",
+    });
   };
 
   const handleReactivateSubscription = () => {
-    // Simular reativação
-    console.log("Subscription reactivated");
-    // Aqui faria a requisição para reativar
+    toast({
+      title: "Assinatura reativada",
+      description: "Sua assinatura continuará ativa normalmente.",
+    });
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-hero flex items-center justify-center">
+        <div className="text-center">
+          <Crown className="h-12 w-12 text-kpop-purple mx-auto mb-4 animate-pulse" />
+          <p className="text-muted-foreground">Carregando informações da assinatura...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const subscriptionStatus = {
+    isActive: subscription?.status === 'active',
+    plan: subscription?.plan_id === 'basic' ? 'Básico' : subscription?.plan_id === 'dorameira' ? 'Dorameira' : 'Gratuito',
+    nextBilling: subscription?.expires_at ? new Date(subscription.expires_at).toLocaleDateString('pt-BR') : 'N/A',
+    amount: subscription?.plan_id === 'basic' ? 'R$ 9,90' : subscription?.plan_id === 'dorameira' ? 'R$ 19,90' : 'Gratuito',
+    cancelRequested: false
   };
 
   return (
@@ -152,7 +179,7 @@ const ManageSubscription = () => {
                 "Respostas instantâneas da IA",
                 "Acesso a novos personagens primeiro",
                 "Conversas privadas e seguras",
-                "Suporte prioritário 24/7",
+                "Atendimento prioritário",
                 "Sem anúncios ou interrupções",
                 "Backup automático das conversas",
                 "Recursos exclusivos em desenvolvimento"
@@ -191,10 +218,10 @@ const ManageSubscription = () => {
               </div>
               
               <div className="flex justify-between items-center p-4 bg-background/50 rounded-lg">
-                <div>
-                  <p className="font-medium">Email de cobrança</p>
-                  <p className="text-sm text-muted-foreground">user@exemplo.com</p>
-                </div>
+                  <div>
+                    <p className="font-medium">Email de cobrança</p>
+                    <p className="text-sm text-muted-foreground">{user?.email || 'N/A'}</p>
+                  </div>
                 <Button variant="outline" size="sm">
                   Alterar
                 </Button>

@@ -132,7 +132,7 @@ const SubscriptionPage = () => {
       {/* Header */}
       <header className="container mx-auto px-4 py-6">
         <div className="flex items-center justify-between mb-6">
-          <Link to="/dashboard" className="inline-flex items-center gap-2 text-foreground hover:text-primary transition-colors">
+          <Link to={isAuthenticated ? "/dashboard" : "/"} className="inline-flex items-center gap-2 text-foreground hover:text-primary transition-colors">
             <ArrowLeft className="h-4 w-4" />
             Voltar
           </Link>

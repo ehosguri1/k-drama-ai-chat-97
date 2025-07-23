@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Crown, MessageCircle, Settings, LogOut, Star, Heart, Sparkles, Lock } from "lucide-react";
+import { Crown, MessageCircle, Settings, LogOut, Star, Heart, Sparkles, Lock, ChevronRight } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
