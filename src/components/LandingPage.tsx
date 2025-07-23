@@ -106,6 +106,19 @@ const LandingPage = () => {
                 className="w-full h-full object-cover"
                 poster="/placeholder.svg"
                 preload="metadata"
+                controls
+                onLoadedMetadata={() => {
+                  const video = document.getElementById('vsl-video') as HTMLVideoElement;
+                  const playOverlay = document.getElementById('play-overlay');
+                  if (video && playOverlay) {
+                    video.addEventListener('play', () => {
+                      playOverlay.style.display = 'none';
+                    });
+                    video.addEventListener('pause', () => {
+                      playOverlay.style.display = 'flex';
+                    });
+                  }
+                }}
               >
                 <source src="https://rhpouhvmgfedbcfeaeic.supabase.co/storage/v1/object/sign/vsl/VSLdoIdolchat.mp4?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9lNWRlMWI1Ni1mMDM5LTQ2MGEtYTdhNC03MzA1MjQwYWFjOTciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ2c2wvVlNMZG9JZG9sY2hhdC5tcDQiLCJpYXQiOjE3NTMyMzkwMjMsImV4cCI6MjEzMTY3MTAyM30.qdq4vj3igwdaSUkZJTUAfcOCQu0Ipsp18gf5ieWO9NQ" type="video/mp4" />
                 Seu navegador não suporta o elemento de vídeo.
@@ -113,44 +126,27 @@ const LandingPage = () => {
               
               {/* Custom Play Button */}
               <div 
+                id="play-overlay"
                 className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition-all duration-300 cursor-pointer"
                 onClick={() => {
                   const video = document.getElementById('vsl-video') as HTMLVideoElement;
-                  if (video.paused) {
+                  if (video && video.paused) {
                     video.play();
-                    (event.currentTarget as HTMLElement).style.display = 'none';
                   }
                 }}
               >
-                <div className="w-20 h-20 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-110">
-                  <div className="w-0 h-0 border-l-[12px] border-l-primary border-t-[8px] border-t-transparent border-b-[8px] border-b-transparent ml-1"></div>
+                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-110">
+                  <div className="w-0 h-0 border-l-[10px] sm:border-l-[12px] border-l-primary border-t-[6px] sm:border-t-[8px] border-t-transparent border-b-[6px] sm:border-b-[8px] border-b-transparent ml-1"></div>
                 </div>
-              </div>
-              
-              {/* Video Controls Overlay */}
-              <div className="absolute bottom-4 left-4 right-4 flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <button 
-                  onClick={() => {
-                    const video = document.getElementById('vsl-video') as HTMLVideoElement;
-                    video.paused ? video.play() : video.pause();
-                  }}
-                  className="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center text-white transition-all"
-                >
-                  ⏯️
-                </button>
-                <div className="flex-1 h-1 bg-white/20 rounded-full overflow-hidden">
-                  <div className="h-full bg-primary transition-all duration-300" style={{width: '0%'}}></div>
-                </div>
-                <span className="text-white text-sm font-medium">0:00 / 0:00</span>
               </div>
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12 px-4">
             <Button 
               variant="default" 
               size="lg" 
-              className="text-lg px-6 py-4 min-w-[200px]"
+              className="text-lg px-6 py-4 w-full sm:w-auto sm:min-w-[200px]"
               onClick={() => navigate('/subscription')}
             >
               <Sparkles className="h-5 w-5" />
@@ -159,7 +155,7 @@ const LandingPage = () => {
             <Button 
               variant="outline" 
               size="lg" 
-              className="text-lg px-6 py-4 min-w-[200px]" 
+              className="text-lg px-6 py-4 w-full sm:w-auto sm:min-w-[200px]" 
               onClick={() => navigate('/dashboard')}
             >
               Ver Demonstração
@@ -307,27 +303,29 @@ const LandingPage = () => {
       </section>
 
       {/* CTA Final */}
-      <section className="container mx-auto px-4 py-20 text-center">
-        <div className="max-w-3xl mx-auto bg-gradient-card rounded-3xl p-12 border border-kpop-purple/20 shadow-elegant">
-          <h2 className="text-4xl font-bold mb-4">
+      <section className="container mx-auto px-4 py-20">
+        <div className="max-w-3xl mx-auto bg-gradient-card rounded-3xl p-8 md:p-12 border border-kpop-purple/20 shadow-elegant text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">
             Pronto para conhecer seu idol? 💜
           </h2>
-          <p className="text-xl text-muted-foreground mb-8">
+          <p className="text-lg md:text-xl text-muted-foreground mb-8">
             Junte-se a milhares de fãs que já estão vivendo essa experiência única. 
             Comece sua jornada hoje mesmo!
           </p>
           
-        <Button 
-          variant="default" 
-          size="lg" 
-          className="text-xl px-12 py-6"
-          onClick={() => navigate('/subscription')}
-        >
-          <Crown className="h-6 w-6" />
-          🚀 Começar Grátis
-        </Button>
-          
-          <p className="text-sm text-muted-foreground mt-4">
+          <div className="flex justify-center mb-6">
+            <Button 
+              variant="default" 
+              size="lg" 
+              className="text-lg md:text-xl px-8 md:px-12 py-4 md:py-6 w-full sm:w-auto"
+              onClick={() => navigate('/subscription')}
+            >
+              <Crown className="h-5 w-5 md:h-6 md:w-6" />
+              🚀 Começar Grátis
+            </Button>
+          </div>
+            
+          <p className="text-sm text-muted-foreground">
             <Clock className="h-4 w-4 inline mr-1" />
             Cancele quando quiser • Acesso imediato
           </p>
