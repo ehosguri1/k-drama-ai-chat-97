@@ -100,15 +100,49 @@ const LandingPage = () => {
 
           {/* VSL Video */}
           <div className="mb-8 max-w-4xl mx-auto">
-            <div className="relative aspect-video rounded-lg overflow-hidden shadow-elegant">
+            <div className="relative aspect-video rounded-lg overflow-hidden shadow-elegant group">
               <video 
-                controls 
+                id="vsl-video"
                 className="w-full h-full object-cover"
                 poster="/placeholder.svg"
+                preload="metadata"
               >
                 <source src="https://rhpouhvmgfedbcfeaeic.supabase.co/storage/v1/object/sign/vsl/VSLdoIdolchat.mp4?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9lNWRlMWI1Ni1mMDM5LTQ2MGEtYTdhNC03MzA1MjQwYWFjOTciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ2c2wvVlNMZG9JZG9sY2hhdC5tcDQiLCJpYXQiOjE3NTMyMzkwMjMsImV4cCI6MjEzMTY3MTAyM30.qdq4vj3igwdaSUkZJTUAfcOCQu0Ipsp18gf5ieWO9NQ" type="video/mp4" />
                 Seu navegador não suporta o elemento de vídeo.
               </video>
+              
+              {/* Custom Play Button */}
+              <div 
+                className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition-all duration-300 cursor-pointer"
+                onClick={() => {
+                  const video = document.getElementById('vsl-video') as HTMLVideoElement;
+                  if (video.paused) {
+                    video.play();
+                    (event.currentTarget as HTMLElement).style.display = 'none';
+                  }
+                }}
+              >
+                <div className="w-20 h-20 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-110">
+                  <div className="w-0 h-0 border-l-[12px] border-l-primary border-t-[8px] border-t-transparent border-b-[8px] border-b-transparent ml-1"></div>
+                </div>
+              </div>
+              
+              {/* Video Controls Overlay */}
+              <div className="absolute bottom-4 left-4 right-4 flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <button 
+                  onClick={() => {
+                    const video = document.getElementById('vsl-video') as HTMLVideoElement;
+                    video.paused ? video.play() : video.pause();
+                  }}
+                  className="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center text-white transition-all"
+                >
+                  ⏯️
+                </button>
+                <div className="flex-1 h-1 bg-white/20 rounded-full overflow-hidden">
+                  <div className="h-full bg-primary transition-all duration-300" style={{width: '0%'}}></div>
+                </div>
+                <span className="text-white text-sm font-medium">0:00 / 0:00</span>
+              </div>
             </div>
           </div>
 
@@ -116,26 +150,26 @@ const LandingPage = () => {
             <Button 
               variant="default" 
               size="lg" 
-              className="text-lg px-8 py-4"
-              onClick={() => isAuthenticated ? navigate('/subscription') : navigate('/register')}
+              className="text-lg px-6 py-4 min-w-[200px]"
+              onClick={() => navigate('/subscription')}
             >
               <Sparkles className="h-5 w-5" />
-              🚀 {isAuthenticated ? 'Ver Planos' : 'Começar Grátis'}
+              🚀 Começar Grátis
             </Button>
             <Button 
               variant="outline" 
               size="lg" 
-              className="text-lg px-8 py-4" 
-              onClick={() => isAuthenticated ? navigate('/dashboard') : navigate('/register')}
+              className="text-lg px-6 py-4 min-w-[200px]" 
+              onClick={() => navigate('/dashboard')}
             >
               Ver Demonstração
             </Button>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-16">
             {features.map((feature, index) => (
-              <div key={index} className="flex items-center gap-2 justify-center">
-                <span className="text-kpop-purple">{feature.icon}</span>
+              <div key={index} className="flex items-center gap-2 justify-center text-center">
+                <span className="text-kpop-purple flex-shrink-0">{feature.icon}</span>
                 <span className="text-sm font-medium">✅ {feature.text}</span>
               </div>
             ))}
@@ -213,7 +247,8 @@ const LandingPage = () => {
       </section>
 
       {/* Testimonials */}
-      <section className="container mx-auto px-4 py-20 bg-card/50 rounded-3xl mx-4">
+      <section className="container mx-auto px-4 py-20">
+        <div className="bg-card/50 rounded-3xl p-8 md:p-12">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-4">O Que Nossas Usuárias Dizem</h2>
           <p className="text-xl text-muted-foreground">
@@ -239,6 +274,7 @@ const LandingPage = () => {
               </CardContent>
             </Card>
           ))}
+        </div>
         </div>
       </section>
 
@@ -285,10 +321,10 @@ const LandingPage = () => {
           variant="default" 
           size="lg" 
           className="text-xl px-12 py-6"
-          onClick={() => isAuthenticated ? navigate('/subscription') : navigate('/register')}
+          onClick={() => navigate('/subscription')}
         >
           <Crown className="h-6 w-6" />
-          🚀 {isAuthenticated ? 'Ver Planos' : 'Começar Grátis'}
+          🚀 Começar Grátis
         </Button>
           
           <p className="text-sm text-muted-foreground mt-4">

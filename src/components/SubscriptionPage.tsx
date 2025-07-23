@@ -37,13 +37,15 @@ const SubscriptionPage = () => {
       });
       navigate('/dashboard');
     } else {
-      // For paid plans, redirect to checkout (or payment processor)
+      // For paid plans, redirect to checkout.com
       toast({
         title: "Redirecionando...",
-        description: "Você será redirecionado para o checkout.",
+        description: "Você será redirecionado para finalizar sua compra.",
       });
-      // Here you would integrate with Stripe, PayPal, etc.
-      window.open('https://checkout.com', '_blank');
+      // Redirect to checkout.com for payment processing
+      setTimeout(() => {
+        window.open('https://checkout.com', '_blank');
+      }, 1000);
     }
   };
 
