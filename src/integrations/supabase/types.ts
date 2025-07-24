@@ -68,6 +68,42 @@ export type Database = {
         }
         Relationships: []
       }
+      subscription_plans: {
+        Row: {
+          created_at: string
+          description: string | null
+          features: string[]
+          id: string
+          is_active: boolean
+          max_chats_per_day: number | null
+          name: string
+          price_brl: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          features?: string[]
+          id: string
+          is_active?: boolean
+          max_chats_per_day?: number | null
+          name: string
+          price_brl: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          features?: string[]
+          id?: string
+          is_active?: boolean
+          max_chats_per_day?: number | null
+          name?: string
+          price_brl?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       subscriptions: {
         Row: {
           created_at: string
@@ -96,7 +132,15 @@ export type Database = {
           updated_at?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "fk_subscriptions_plan_id"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "subscription_plans"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
