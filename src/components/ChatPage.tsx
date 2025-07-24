@@ -9,6 +9,7 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useSubscription } from "@/hooks/useSubscription";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import idol1 from "@/assets/idol-1.jpg";
 import idol2 from "@/assets/idol-2.jpg";
 import idol3 from "@/assets/idol-3.jpg";
@@ -26,6 +27,7 @@ const ChatPage = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const { isPremium, loading: subLoading } = useSubscription();
+  const { toast } = useToast();
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -123,9 +125,36 @@ const ChatPage = () => {
   const handleSendMessage = async () => {
     if (!message.trim() || !user || !idolId) return;
 
+    // Input validation - enforce max length and sanitize
+    const sanitizedMessage = message.trim();
+    if (sanitizedMessage.length > 1000) {
+      toast({
+        title: "Mensagem muito longa",
+        description: "A mensagem deve ter no máximo 1000 caracteres.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Rate limiting check (basic client-side)
+    const now = Date.now();
+    const oneHourAgo = now - (60 * 60 * 1000);
+    const recentMessages = messages.filter(msg => 
+      msg.sender === 'user' && msg.timestamp.getTime() > oneHourAgo
+    );
+    
+    if (recentMessages.length >= 100) {
+      toast({
+        title: "Limite de mensagens atingido",
+        description: "Você pode enviar no máximo 100 mensagens por hora.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const newMessage: Message = {
       id: Date.now(),
-      text: message,
+      text: sanitizedMessage,
       sender: 'user',
       timestamp: new Date(),
     };
@@ -137,11 +166,17 @@ const ChatPage = () => {
       await supabase.from('chat_messages').insert({
         user_id: user.id,
         idol_id: idolId,
-        message: message,
+        message: sanitizedMessage,
         sender: 'user'
       });
     } catch (error) {
       console.error('Error saving user message:', error);
+      toast({
+        title: "Erro ao enviar mensagem",
+        description: "Tente novamente em alguns segundos.",
+        variant: "destructive",
+      });
+      return;
     }
 
     setMessage("");
@@ -360,9 +395,15 @@ const ChatPage = () => {
             <Input
               placeholder={`Mensagem para ${currentIdol.name}...`}
               value={message}
-              onChange={(e) => setMessage(e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (value.length <= 1000) {
+                  setMessage(value);
+                }
+              }}
               onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
               className="bg-background/50"
+              maxLength={1000}
             />
             
             <Button onClick={handleSendMessage} variant="kpop">

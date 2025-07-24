@@ -53,6 +53,36 @@ const AuthPage = ({ mode }: AuthPageProps) => {
       return;
     }
 
+    // Password strength validation
+    if (mode === 'register') {
+      if (password.length < 8) {
+        toast({
+          title: "Senha fraca",
+          description: "A senha deve ter pelo menos 8 caracteres.",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password)) {
+        toast({
+          title: "Senha fraca",
+          description: "A senha deve conter pelo menos uma letra minúscula, maiúscula e um número.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (name && (name.length > 50 || !/^[a-zA-ZÀ-ÿ\s]*$/.test(name))) {
+        toast({
+          title: "Nome inválido",
+          description: "O nome deve ter no máximo 50 caracteres e conter apenas letras.",
+          variant: "destructive",
+        });
+        return;
+      }
+    }
+
     setLoading(true);
 
     try {
@@ -171,8 +201,15 @@ const AuthPage = ({ mode }: AuthPageProps) => {
                     type="text"
                     placeholder="Seu nome"
                     value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      // Allow only letters, spaces, and common characters
+                      if (/^[a-zA-ZÀ-ÿ\s]*$/.test(value) && value.length <= 50) {
+                        setName(value);
+                      }
+                    }}
                     disabled={loading}
+                    maxLength={50}
                   />
                 </div>
               )}
@@ -190,18 +227,19 @@ const AuthPage = ({ mode }: AuthPageProps) => {
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="password">Senha</Label>
-                <div className="relative">
-                  <Input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    disabled={loading}
-                    required
-                  />
+                <div className="space-y-2">
+                  <Label htmlFor="password">Senha</Label>
+                  <div className="relative">
+                    <Input
+                      id="password"
+                      type={showPassword ? "text" : "password"}
+                      placeholder="••••••••"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      disabled={loading}
+                      required
+                      minLength={8}
+                    />
                   <Button
                     type="button"
                     variant="ghost"
