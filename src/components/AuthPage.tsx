@@ -23,6 +23,13 @@ const AuthPage = ({ mode }: AuthPageProps) => {
   const { toast } = useToast();
 
   useEffect(() => {
+    // Set up auth state listener to handle auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session && event === 'SIGNED_IN') {
+        navigate('/dashboard');
+      }
+    });
+
     // Check if user is already logged in
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
@@ -31,6 +38,8 @@ const AuthPage = ({ mode }: AuthPageProps) => {
       }
     };
     checkAuth();
+
+    return () => subscription.unsubscribe();
   }, [navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -218,6 +227,35 @@ const AuthPage = ({ mode }: AuthPageProps) => {
                     size="sm"
                     className="px-0"
                     disabled={loading}
+                    onClick={async () => {
+                      if (!email) {
+                        toast({
+                          title: "Email necessário",
+                          description: "Digite seu email primeiro para redefinir a senha.",
+                          variant: "destructive",
+                        });
+                        return;
+                      }
+                      
+                      try {
+                        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+                          redirectTo: `${window.location.origin}/auth`,
+                        });
+                        
+                        if (error) throw error;
+                        
+                        toast({
+                          title: "Email enviado!",
+                          description: "Verifique sua caixa de entrada para redefinir sua senha.",
+                        });
+                      } catch (error: any) {
+                        toast({
+                          title: "Erro",
+                          description: "Não foi possível enviar o email de redefinição.",
+                          variant: "destructive",
+                        });
+                      }
+                    }}
                   >
                     Esqueceu a senha?
                   </Button>
