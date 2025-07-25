@@ -15,7 +15,7 @@ import joonParkImage from "@/assets/joon-park.jpg";
 
 const Dashboard = () => {
   const { user, signOut, loading: authLoading } = useAuth();
-  const { subscription, isPremium, loading: subLoading } = useSubscription();
+  const { subscription, isPremium, hasAccess, loading: subLoading } = useSubscription();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -97,8 +97,6 @@ const Dashboard = () => {
       online: false
     }
   ];
-
-  const { hasAccess } = useSubscription();
 
   const handleChatClick = (idolId: string) => {
     const idol = idols.find(i => i.id === idolId);
