@@ -125,7 +125,7 @@ const ChatPage = () => {
   const handleSendMessage = async () => {
     if (!message.trim() || !user || !idolId) return;
 
-    // Input validation - enforce max length and sanitize
+    // Enhanced input validation
     const sanitizedMessage = message.trim();
     if (sanitizedMessage.length > 1000) {
       toast({
@@ -136,20 +136,50 @@ const ChatPage = () => {
       return;
     }
 
-    // Rate limiting check (basic client-side)
-    const now = Date.now();
-    const oneHourAgo = now - (60 * 60 * 1000);
-    const recentMessages = messages.filter(msg => 
-      msg.sender === 'user' && msg.timestamp.getTime() > oneHourAgo
-    );
-    
-    if (recentMessages.length >= 100) {
+    if (sanitizedMessage.length === 0) {
       toast({
-        title: "Limite de mensagens atingido",
-        description: "Você pode enviar no máximo 100 mensagens por hora.",
+        title: "Mensagem vazia",
+        description: "Por favor, digite uma mensagem.",
         variant: "destructive",
       });
       return;
+    }
+
+    try {
+      // Server-side rate limiting check
+      const { data: rateCheckResult, error: rateError } = await supabase
+        .rpc('check_rate_limit', {
+          p_user_id: user.id,
+          p_action_type: 'chat_message',
+          p_max_actions: 50, // 50 messages per hour
+          p_window_minutes: 60
+        });
+
+      if (rateError || !rateCheckResult) {
+        toast({
+          title: "Limite de mensagens atingido",
+          description: "Você atingiu o limite de mensagens. Tente novamente mais tarde.",
+          variant: "destructive",
+        });
+        return;
+      }
+    } catch (error) {
+      console.error('Rate limit check failed:', error);
+      // Fallback to client-side rate limiting if server check fails
+      const now = Date.now();
+      const oneHourAgo = now - (60 * 60 * 1000);
+      const recentMessages = messages.filter(msg => 
+        msg.sender === 'user' && msg.timestamp.getTime() > oneHourAgo
+      );
+      
+      if (recentMessages.length >= 50) {
+        toast({
+          title: "Limite de mensagens atingido",
+          description: "Você pode enviar no máximo 50 mensagens por hora.",
+          variant: "destructive",
+        });
+        return;
+      }
     }
 
     const newMessage: Message = {

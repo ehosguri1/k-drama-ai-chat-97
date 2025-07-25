@@ -44,6 +44,8 @@ const AuthPage = ({ mode }: AuthPageProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Enhanced validation
     if (!email || !password) {
       toast({
         title: "Erro",
@@ -53,30 +55,85 @@ const AuthPage = ({ mode }: AuthPageProps) => {
       return;
     }
 
-    // Password strength validation
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      toast({
+        title: "Email inválido",
+        description: "Por favor, insira um email válido.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Enhanced password validation
+    if (password.length < 8) {
+      toast({
+        title: "Senha fraca",
+        description: "A senha deve ter pelo menos 8 caracteres.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (password.length > 128) {
+      toast({
+        title: "Senha muito longa",
+        description: "A senha deve ter no máximo 128 caracteres.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Password complexity validation for registration
     if (mode === 'register') {
-      if (password.length < 8) {
+      const hasUpperCase = /[A-Z]/.test(password);
+      const hasLowerCase = /[a-z]/.test(password);
+      const hasNumbers = /\d/.test(password);
+      const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+      if (!hasUpperCase || !hasLowerCase || !hasNumbers || !hasSpecialChar) {
         toast({
           title: "Senha fraca",
-          description: "A senha deve ter pelo menos 8 caracteres.",
-          variant: "destructive",
-        });
-        return;
-      }
-      
-      if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password)) {
-        toast({
-          title: "Senha fraca",
-          description: "A senha deve conter pelo menos uma letra minúscula, maiúscula e um número.",
+          description: "A senha deve conter pelo menos: uma letra maiúscula, uma minúscula, um número e um caractere especial.",
           variant: "destructive",
         });
         return;
       }
 
-      if (name && (name.length > 50 || !/^[a-zA-ZÀ-ÿ\s]*$/.test(name))) {
+      // Enhanced name validation
+      if (!name?.trim()) {
+        toast({
+          title: "Nome obrigatório",
+          description: "Por favor, insira seu nome.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (name.length < 2) {
+        toast({
+          title: "Nome muito curto",
+          description: "O nome deve ter pelo menos 2 caracteres.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (name.length > 50) {
+        toast({
+          title: "Nome muito longo",
+          description: "O nome deve ter no máximo 50 caracteres.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const nameRegex = /^[a-zA-ZÀ-ÿ\s\-']+$/;
+      if (!nameRegex.test(name)) {
         toast({
           title: "Nome inválido",
-          description: "O nome deve ter no máximo 50 caracteres e conter apenas letras.",
+          description: "O nome pode conter apenas letras, espaços, hífens e apostrósfes.",
           variant: "destructive",
         });
         return;
