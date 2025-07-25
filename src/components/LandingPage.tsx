@@ -263,9 +263,7 @@ const LandingPage = () => {
       {/* CTA Final */}
       <section className="container mx-auto px-4 py-20">
         <div className="max-w-3xl mx-auto bg-gradient-card rounded-3xl p-8 md:p-12 border border-kpop-purple/20 shadow-elegant text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Pronto para conhecer seu idol? 💜
-          </h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Pronta para conhecer seu idol? 💜</h2>
           <p className="text-lg md:text-xl text-muted-foreground mb-8">
             Junte-se a milhares de fãs que já estão vivendo essa experiência única. 
             Comece sua jornada hoje mesmo!
