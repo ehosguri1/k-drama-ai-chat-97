@@ -13,6 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import idol1 from "@/assets/idol-1.jpg";
 import idol2 from "@/assets/idol-2.jpg";
 import idol3 from "@/assets/idol-3.jpg";
+import joonParkImage from "@/assets/joon-park.jpg";
 
 interface Message {
   id: number;
@@ -32,28 +33,25 @@ const ChatPage = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (!authLoading && !subLoading) {
-      if (!user) {
-        navigate('/auth');
-        return;
-      }
-      if (!isPremium()) {
-        navigate('/subscription');
-        return;
-      }
-    }
-  }, [user, isPremium, authLoading, subLoading, navigate]);
-
   // Simular dados do idol baseado no ID
   const idols = {
+    'joon-park': {
+      name: "Joon Park",
+      image: joonParkImage,
+      status: "Online agora",
+      category: "Modelo de Testes",
+      personality: "Carismático e atencioso",
+      typing: false,
+      isFree: true
+    },
     '1': { 
       name: "Luna", 
       image: idol1, 
       status: "Online agora", 
       category: "K-pop Idol",
       personality: "Doce e carinhosa",
-      typing: false
+      typing: false,
+      isFree: false
     },
     '2': { 
       name: "Hyun-woo", 
@@ -61,7 +59,8 @@ const ChatPage = () => {
       status: "Online agora", 
       category: "Ator de Dorama",
       personality: "Engraçado e protetor",
-      typing: false
+      typing: false,
+      isFree: false
     },
     '3': { 
       name: "Jin-ho", 
@@ -69,11 +68,26 @@ const ChatPage = () => {
       status: "Offline", 
       category: "K-pop Rapper",
       personality: "Criativo e confiante",
-      typing: false
+      typing: false,
+      isFree: false
     }
   };
 
-  const currentIdol = idols[idolId as keyof typeof idols] || idols['1'];
+  const currentIdol = idols[idolId as keyof typeof idols] || idols['joon-park'];
+
+  useEffect(() => {
+    if (!authLoading && !subLoading) {
+      if (!user) {
+        navigate('/auth');
+        return;
+      }
+      // Allow access to Joon Park for all users (free model)
+      if (currentIdol && !currentIdol.isFree && !isPremium()) {
+        navigate('/subscription');
+        return;
+      }
+    }
+  }, [user, isPremium, authLoading, subLoading, navigate, currentIdol]);
 
   // Load messages from database
   useEffect(() => {
@@ -211,42 +225,77 @@ const ChatPage = () => {
 
     setMessage("");
 
-    // Simular resposta da IA após um breve delay
-    setTimeout(async () => {
-      const responses = [
-        "Que interessante! Me conta mais sobre isso 😊",
-        "Adoro conversar com você! Você sempre tem coisas legais para falar ✨",
-        "Haha, você é muito engraçada! 😄",
-        "Isso me lembra uma música que estou compondo... quer ouvir sobre ela? 🎵",
-        "Você sempre consegue me fazer sorrir 💜",
-        "Nossa, que incrível! Eu também adoro essas coisas!",
-        "Você tem um gosto excelente! 😍",
-        "Estou curiosa para saber mais! Continue falando!",
-      ];
-
-      const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+    // For Joon Park, use ChatGPT API, for others use predefined responses
+    if (idolId === 'joon-park') {
+      // Show typing indicator
+      const typingIdol = { ...currentIdol, typing: true };
       
-      const aiResponse: Message = {
-        id: Date.now() + 1,
-        text: randomResponse,
-        sender: 'idol',
-        timestamp: new Date(),
-      };
+      setTimeout(async () => {
+        try {
+          const { data, error } = await supabase.functions.invoke('chat-with-joon', {
+            body: { message: sanitizedMessage }
+          });
 
-      setMessages(prev => [...prev, aiResponse]);
+          if (error) throw error;
 
-      // Save AI response to database
-      try {
-        await supabase.from('chat_messages').insert({
-          user_id: user.id,
-          idol_id: idolId,
-          message: randomResponse,
-          sender: 'idol'
-        });
-      } catch (error) {
-        console.error('Error saving AI message:', error);
-      }
-    }, 1000 + Math.random() * 2000);
+          const aiResponse: Message = {
+            id: Date.now() + 1,
+            text: data.response,
+            sender: 'idol',
+            timestamp: new Date(),
+          };
+
+          setMessages(prev => [...prev, aiResponse]);
+        } catch (error) {
+          console.error('Error getting AI response:', error);
+          // Fallback to default response
+          const fallbackResponse: Message = {
+            id: Date.now() + 1,
+            text: "Desculpe, estou com dificuldades técnicas agora. Tente novamente em alguns minutos! 😅",
+            sender: 'idol',
+            timestamp: new Date(),
+          };
+          setMessages(prev => [...prev, fallbackResponse]);
+        }
+      }, 1000 + Math.random() * 2000);
+    } else {
+      // Default responses for other idols
+      setTimeout(async () => {
+        const responses = [
+          "Que interessante! Me conta mais sobre isso 😊",
+          "Adoro conversar com você! Você sempre tem coisas legais para falar ✨",
+          "Haha, você é muito engraçada! 😄",
+          "Isso me lembra uma música que estou compondo... quer ouvir sobre ela? 🎵",
+          "Você sempre consegue me fazer sorrir 💜",
+          "Nossa, que incrível! Eu também adoro essas coisas!",
+          "Você tem um gosto excelente! 😍",
+          "Estou curiosa para saber mais! Continue falando!",
+        ];
+
+        const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+        
+        const aiResponse: Message = {
+          id: Date.now() + 1,
+          text: randomResponse,
+          sender: 'idol',
+          timestamp: new Date(),
+        };
+
+        setMessages(prev => [...prev, aiResponse]);
+
+        // Save AI response to database
+        try {
+          await supabase.from('chat_messages').insert({
+            user_id: user.id,
+            idol_id: idolId,
+            message: randomResponse,
+            sender: 'idol'
+          });
+        } catch (error) {
+          console.error('Error saving AI message:', error);
+        }
+      }, 1000 + Math.random() * 2000);
+    }
   };
 
   const handleSendHeart = () => {
@@ -291,7 +340,7 @@ const ChatPage = () => {
     );
   }
 
-  if (!user || !isPremium()) return null;
+  if (!user || (!currentIdol?.isFree && !isPremium())) return null;
 
   return (
     <div className="h-screen bg-gradient-hero flex flex-col">
@@ -320,9 +369,16 @@ const ChatPage = () => {
                 <h2 className="font-semibold text-lg">{currentIdol.name}</h2>
                 <div className="flex items-center gap-2">
                   <p className="text-sm text-muted-foreground">{currentIdol.status}</p>
-                  <Badge variant="outline" className="text-xs border-kpop-purple/30 text-kpop-purple">
-                    {currentIdol.category}
-                  </Badge>
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline" className="text-xs border-kpop-purple/30 text-kpop-purple">
+                      {currentIdol.category}
+                    </Badge>
+                    {currentIdol.isFree && (
+                      <Badge variant="secondary" className="text-xs bg-green-100 text-green-700 border-green-200">
+                        Gratuito
+                      </Badge>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -453,11 +509,15 @@ const ChatPage = () => {
         </div>
       </div>
 
-      {/* Premium Features Banner (if needed) */}
+      {/* Premium Features Banner */}
       <div className="bg-gradient-primary text-white p-3 text-center">
         <div className="flex items-center justify-center gap-2 text-sm">
           <Star className="h-4 w-4" />
-          <span>Você está usando o plano Premium • Conversas ilimitadas</span>
+          {currentIdol?.isFree ? (
+            <span>Chat gratuito com {currentIdol.name} • Aproveite!</span>
+          ) : (
+            <span>Você está usando o plano Premium • Conversas ilimitadas</span>
+          )}
           <Star className="h-4 w-4" />
         </div>
       </div>

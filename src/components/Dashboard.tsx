@@ -11,6 +11,7 @@ import { useSubscription } from "@/hooks/useSubscription";
 import idol1 from "@/assets/idol-1.jpg";
 import idol2 from "@/assets/idol-2.jpg";
 import idol3 from "@/assets/idol-3.jpg";
+import joonParkImage from "@/assets/joon-park.jpg";
 
 const Dashboard = () => {
   const { user, signOut, loading: authLoading } = useAuth();
@@ -38,57 +39,75 @@ const Dashboard = () => {
 
   const idols = [
     {
-      id: "joon-park",
-      name: "Joon Park",
-      description: "Modelo de testes do IdolChat - sempre disponível para todos os planos",
-      image: "/lovable-uploads/d30e8196-63c9-4740-b890-49c2ef32c14d.png",
-      category: "Teste",
-      personality: "Amigável, disponível",
-      online: true,
-      availableForFree: true
+      id: 'joon-park',
+      name: 'Joon Park',
+      image: joonParkImage,
+      status: 'Online agora',
+      category: 'Modelo de Testes',
+      personality: 'Carismático e atencioso',
+      lastMessage: 'Oi! Que bom te ver aqui! Como você está? 💜',
+      messageTime: 'agora',
+      isNew: true,
+      plan: 'free',
+      isFree: true
     },
     {
-      id: 1,
-      name: "Luna",
-      description: "Doce e carinhosa, sempre pronta para conversar sobre música e sonhos",
+      id: '1',
+      name: 'Luna',
       image: idol1,
-      category: "K-pop Idol",
-      personality: "Romântica, sonhadora",
-      online: true,
-      availableForFree: false
+      status: 'Online agora',
+      category: 'K-pop Idol',
+      personality: 'Doce e carinhosa',
+      lastMessage: 'Oi! Como você está? 💜',
+      messageTime: '2 min',
+      isNew: true,
+      plan: 'basico',
+      isFree: false,
+      description: "Doce e carinhosa, sempre pronta para conversar sobre música e sonhos",
+      online: true
     },
     {
-      id: 2,
-      name: "Hyun-woo",
-      description: "Ator de doramas charmoso, inteligente e com senso de humor incrível",
+      id: '2',
+      name: 'Hyun-woo',
       image: idol2,
-      category: "Ator de Dorama",
-      personality: "Engraçado, protetor",
-      online: true,
-      availableForFree: false
+      status: 'Online agora',
+      category: 'Ator de Dorama',
+      personality: 'Engraçado e protetor',
+      lastMessage: 'Quer assistir um filme comigo?',
+      messageTime: '5 min',
+      isNew: false,
+      plan: 'dorameira',
+      isFree: false,
+      description: "Ator de doramas charmoso, inteligente e com senso de humor incrível",
+      online: true
     },
     {
-      id: 3,
-      name: "Jin-ho",
-      description: "Rapper talentoso e estiloso, adora falar sobre arte e criatividade",
+      id: '3',
+      name: 'Jin-ho',
       image: idol3,
-      category: "K-pop Rapper",
-      personality: "Criativo, confiante",
-      online: false,
-      availableForFree: false
+      status: 'Offline há 1h',
+      category: 'K-pop Rapper',
+      personality: 'Criativo e confiante',
+      lastMessage: 'Acabei de compor uma música!',
+      messageTime: '1h',
+      isNew: false,
+      plan: 'dorameira',
+      isFree: false,
+      description: "Rapper talentoso e estiloso, adora falar sobre arte e criatividade",
+      online: false
     }
   ];
 
-  const handleChatClick = (idolId: string | number) => {
+  const { hasAccess } = useSubscription();
+
+  const handleChatClick = (idolId: string) => {
     const idol = idols.find(i => i.id === idolId);
     
     // Permitir acesso ao Joon Park para todos os planos (incluindo gratuito)
-    if (idolId === "joon-park" || (idol && idol.availableForFree)) {
+    if (idol?.isFree || hasAccess(idol?.plan || '')) {
       navigate(`/chat/${idolId}`);
-    } else if (!isPremium()) {
-      navigate('/subscription');
     } else {
-      navigate(`/chat/${idolId}`);
+      navigate('/subscription');
     }
   };
 
@@ -119,7 +138,7 @@ const Dashboard = () => {
             
             <ThemeToggle />
             
-            <Button variant="ghost" size="sm">
+            <Button variant="ghost" size="sm" onClick={() => navigate('/account-settings')}>
               <Settings className="h-4 w-4" />
             </Button>
             
@@ -187,7 +206,7 @@ const Dashboard = () => {
                   }`} />
                   
                   {/* Lock overlay - não mostrar para Joon Park ou se tem premium */}
-                  {!isPremium() && !idol.availableForFree && (
+                  {!idol.isFree && !hasAccess(idol.plan) && (
                     <div className="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center">
                       <Lock className="h-8 w-8 text-white" />
                     </div>
@@ -206,7 +225,7 @@ const Dashboard = () => {
                   <Badge variant="outline" className="text-xs border-kpop-lavender text-kpop-lavender">
                     {idol.personality}
                   </Badge>
-                  {idol.availableForFree && (
+                  {idol.isFree && (
                     <Badge className="text-xs bg-green-500/20 text-green-400 border-green-400/30">
                       Gratuito
                     </Badge>
@@ -227,12 +246,12 @@ const Dashboard = () => {
                 </div>
 
                 <Button 
-                  variant={isPremium() || idol.availableForFree ? "default" : "outline"} 
+                  variant={idol.isFree || hasAccess(idol.plan) ? "default" : "outline"} 
                   className="w-full group-hover:scale-105 transition-transform"
                   onClick={() => handleChatClick(idol.id)}
                   disabled={!idol.online}
                 >
-                  {(!isPremium() && !idol.availableForFree) ? (
+                  {(!idol.isFree && !hasAccess(idol.plan)) ? (
                     <>
                       <Lock className="h-4 w-4 mr-2" />
                       Assinar para conversar
@@ -245,7 +264,7 @@ const Dashboard = () => {
                   ) : (
                     <>
                       <MessageCircle className="h-4 w-4 mr-2" />
-                      {idol.availableForFree ? "Conversar grátis" : "Conversar agora"}
+                      {idol.isFree ? "Conversar grátis" : "Conversar agora"}
                     </>
                   )}
                 </Button>
