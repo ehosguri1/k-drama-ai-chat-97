@@ -199,9 +199,7 @@ const Dashboard = () => {
                   </Avatar>
                   
                    {/* Status indicator */}
-                   <div className={`absolute -bottom-1 -right-1 w-6 h-6 rounded-full border-2 border-card ${
-                     (idol.status === "Online agora" || idol.isFree) ? 'bg-green-500' : 'bg-gray-400'
-                   }`} />
+                   <div className={`absolute -bottom-1 -right-1 w-6 h-6 rounded-full border-2 border-card bg-green-500`} />
                   
                   {/* Lock overlay - não mostrar para Joon Park ou se tem premium */}
                   {!idol.isFree && !hasAccess(idol.plan) && (
@@ -247,7 +245,7 @@ const Dashboard = () => {
                   variant={idol.isFree || hasAccess(idol.plan) ? "default" : "outline"} 
                   className="w-full group-hover:scale-105 transition-transform"
                    onClick={() => handleChatClick(idol.id)}
-                   disabled={!idol.isFree && idol.status === "Offline há 1h"}
+                   disabled={false}
                 >
                   {(!idol.isFree && !hasAccess(idol.plan)) ? (
                     <>

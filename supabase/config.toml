@@ -1,1 +1,7 @@
 project_id = "qursphxkahqmagmgyoaj"
+
+[functions.chat-with-joon]
+verify_jwt = true
+
+[functions.chat-universal]
+verify_jwt = true

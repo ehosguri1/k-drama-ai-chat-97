@@ -44,8 +44,8 @@ const ChatPage = () => {
       typing: false,
       isFree: true
     },
-    '1': { 
-      name: "Luna", 
+    'luna-star': { 
+      name: "Luna Star", 
       image: idol1, 
       status: "Online agora", 
       category: "K-pop Idol",
@@ -53,21 +53,12 @@ const ChatPage = () => {
       typing: false,
       isFree: false
     },
-    '2': { 
-      name: "Hyun-woo", 
+    'kai-storm': { 
+      name: "Kai Storm", 
       image: idol2, 
       status: "Online agora", 
-      category: "Ator de Dorama",
-      personality: "Engraçado e protetor",
-      typing: false,
-      isFree: false
-    },
-    '3': { 
-      name: "Jin-ho", 
-      image: idol3, 
-      status: "Offline", 
       category: "K-pop Rapper",
-      personality: "Criativo e confiante",
+      personality: "Engraçado e protetor",
       typing: false,
       isFree: false
     }
@@ -225,15 +216,18 @@ const ChatPage = () => {
 
     setMessage("");
 
-    // For Joon Park, use ChatGPT API, for others use predefined responses
-    if (idolId === 'joon-park') {
+    // Use universal chat for all idols
+    if (idolId === 'joon-park' || idolId === 'luna-star' || idolId === 'kai-storm') {
       // Show typing indicator
       const typingIdol = { ...currentIdol, typing: true };
       
       setTimeout(async () => {
         try {
-          const { data, error } = await supabase.functions.invoke('chat-with-joon', {
-            body: { message: sanitizedMessage }
+          const { data, error } = await supabase.functions.invoke('chat-universal', {
+            body: { 
+              message: sanitizedMessage,
+              idolId: idolId 
+            }
           });
 
           if (error) throw error;
