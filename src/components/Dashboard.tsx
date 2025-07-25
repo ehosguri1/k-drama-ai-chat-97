@@ -38,13 +38,24 @@ const Dashboard = () => {
 
   const idols = [
     {
+      id: "joon-park",
+      name: "Joon Park",
+      description: "Modelo de testes do IdolChat - sempre disponível para todos os planos",
+      image: "/lovable-uploads/d30e8196-63c9-4740-b890-49c2ef32c14d.png",
+      category: "Teste",
+      personality: "Amigável, disponível",
+      online: true,
+      availableForFree: true
+    },
+    {
       id: 1,
       name: "Luna",
       description: "Doce e carinhosa, sempre pronta para conversar sobre música e sonhos",
       image: idol1,
       category: "K-pop Idol",
       personality: "Romântica, sonhadora",
-      online: true
+      online: true,
+      availableForFree: false
     },
     {
       id: 2,
@@ -53,7 +64,8 @@ const Dashboard = () => {
       image: idol2,
       category: "Ator de Dorama",
       personality: "Engraçado, protetor",
-      online: true
+      online: true,
+      availableForFree: false
     },
     {
       id: 3,
@@ -62,12 +74,18 @@ const Dashboard = () => {
       image: idol3,
       category: "K-pop Rapper",
       personality: "Criativo, confiante",
-      online: false
+      online: false,
+      availableForFree: false
     }
   ];
 
-  const handleChatClick = (idolId: number) => {
-    if (!isPremium()) {
+  const handleChatClick = (idolId: string | number) => {
+    const idol = idols.find(i => i.id === idolId);
+    
+    // Permitir acesso ao Joon Park para todos os planos (incluindo gratuito)
+    if (idolId === "joon-park" || (idol && idol.availableForFree)) {
+      navigate(`/chat/${idolId}`);
+    } else if (!isPremium()) {
       navigate('/subscription');
     } else {
       navigate(`/chat/${idolId}`);
@@ -168,7 +186,8 @@ const Dashboard = () => {
                     idol.online ? 'bg-green-500' : 'bg-gray-400'
                   }`} />
                   
-                  {!isPremium() && (
+                  {/* Lock overlay - não mostrar para Joon Park ou se tem premium */}
+                  {!isPremium() && !idol.availableForFree && (
                     <div className="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center">
                       <Lock className="h-8 w-8 text-white" />
                     </div>
@@ -187,6 +206,11 @@ const Dashboard = () => {
                   <Badge variant="outline" className="text-xs border-kpop-lavender text-kpop-lavender">
                     {idol.personality}
                   </Badge>
+                  {idol.availableForFree && (
+                    <Badge className="text-xs bg-green-500/20 text-green-400 border-green-400/30">
+                      Gratuito
+                    </Badge>
+                  )}
                 </div>
               </CardHeader>
 
@@ -203,12 +227,12 @@ const Dashboard = () => {
                 </div>
 
                 <Button 
-                  variant={isPremium() ? "default" : "outline"} 
+                  variant={isPremium() || idol.availableForFree ? "default" : "outline"} 
                   className="w-full group-hover:scale-105 transition-transform"
                   onClick={() => handleChatClick(idol.id)}
-                  disabled={!idol.online && isPremium()}
+                  disabled={!idol.online}
                 >
-                  {!isPremium() ? (
+                  {(!isPremium() && !idol.availableForFree) ? (
                     <>
                       <Lock className="h-4 w-4 mr-2" />
                       Assinar para conversar
@@ -221,7 +245,7 @@ const Dashboard = () => {
                   ) : (
                     <>
                       <MessageCircle className="h-4 w-4 mr-2" />
-                      Conversar agora
+                      {idol.availableForFree ? "Conversar grátis" : "Conversar agora"}
                     </>
                   )}
                 </Button>

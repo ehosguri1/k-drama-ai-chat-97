@@ -334,7 +334,7 @@ const AuthPage = ({ mode }: AuthPageProps) => {
                       
                       try {
                         const { error } = await supabase.auth.resetPasswordForEmail(email, {
-                          redirectTo: `${window.location.origin}/auth`,
+                          redirectTo: `${window.location.origin}/login?reset=true`,
                         });
                         
                         if (error) throw error;
@@ -344,9 +344,18 @@ const AuthPage = ({ mode }: AuthPageProps) => {
                           description: "Verifique sua caixa de entrada para redefinir sua senha.",
                         });
                       } catch (error: any) {
+                        console.error('Password reset error:', error);
+                        let errorMessage = "Erro ao enviar email de redefinição. Tente novamente.";
+                        
+                        if (error.message.includes('User not found')) {
+                          errorMessage = "Email não encontrado. Verifique se está correto.";
+                        } else if (error.message.includes('too_many_requests')) {
+                          errorMessage = "Muitas tentativas. Aguarde alguns minutos antes de tentar novamente.";
+                        }
+                        
                         toast({
                           title: "Erro",
-                          description: "Não foi possível enviar o email de redefinição.",
+                          description: errorMessage,
                           variant: "destructive",
                         });
                       }

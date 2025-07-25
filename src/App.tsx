@@ -9,6 +9,7 @@ import Dashboard from "./components/Dashboard";
 import SubscriptionPage from "./components/SubscriptionPage";
 import ChatPage from "./components/ChatPage";
 import ManageSubscription from "./components/ManageSubscription";
+import TestAccountsPage from "./pages/TestAccounts";
 import NotFound from "./pages/NotFound";
 import LoadingScreen from "./components/LoadingScreen";
 import { useLoading } from "./hooks/useLoading";
@@ -37,6 +38,7 @@ const App = () => {
             <Route path="/subscription" element={<SubscriptionPage />} />
             <Route path="/chat/:idolId" element={<ChatPage />} />
             <Route path="/manage-subscription" element={<ManageSubscription />} />
+            <Route path="/test-accounts" element={<TestAccountsPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
