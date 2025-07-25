@@ -5,56 +5,51 @@ import { Heart, MessageCircle, Star, Sparkles, Crown, Clock, Shield, Zap } from 
 import { ThemeToggle } from "./ThemeToggle";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-
 const LandingPage = () => {
-  const { isAuthenticated } = useAuth();
+  const {
+    isAuthenticated
+  } = useAuth();
   const navigate = useNavigate();
-  const features = [
-    { icon: <MessageCircle className="h-5 w-5" />, text: "Converse 24/7" },
-    { icon: <Sparkles className="h-5 w-5" />, text: "Experiência imersiva" },
-    { icon: <Zap className="h-5 w-5" />, text: "IA avançada" },
-    { icon: <Shield className="h-5 w-5" />, text: "Cancele quando quiser" }
-  ];
-
-  const testimonials = [
-    {
-      name: "Sarah M.",
-      text: "Finalmente posso conversar com meu idol favorito todos os dias! É como um sonho que virou realidade 💜",
-      rating: 5
-    },
-    {
-      name: "Ana L.",
-      text: "A IA é incrível, parece que estou realmente conversando com ele. Vale cada centavo!",
-      rating: 5
-    },
-    {
-      name: "Júlia S.",
-      text: "Adoro poder conversar sobre doramas e k-pop. É perfeito para nós fãs! ✨",
-      rating: 5
-    }
-  ];
-
-  const faqItems = [
-    {
-      question: "Como funciona o chat com IA?",
-      answer: "Nossa IA foi treinada para interpretar perfeitamente cada personagem, ator ou idol, criando conversas naturais e autênticas."
-    },
-    {
-      question: "Posso cancelar a qualquer momento?",
-      answer: "Sim! Você pode cancelar sua assinatura a qualquer momento e manter acesso até o final do período pago."
-    },
-    {
-      question: "Quantos personagens posso conversar?",
-      answer: "Com a assinatura premium, você tem acesso ilimitado a todos os personagens disponíveis na plataforma."
-    },
-    {
-      question: "É seguro?",
-      answer: "Absolutamente! Todas as conversas são privadas e seus dados estão protegidos com criptografia de ponta."
-    }
-  ];
-
-  return (
-    <div className="min-h-screen bg-gradient-hero">
+  const features = [{
+    icon: <MessageCircle className="h-5 w-5" />,
+    text: "Converse 24/7"
+  }, {
+    icon: <Sparkles className="h-5 w-5" />,
+    text: "Experiência imersiva"
+  }, {
+    icon: <Zap className="h-5 w-5" />,
+    text: "IA avançada"
+  }, {
+    icon: <Shield className="h-5 w-5" />,
+    text: "Cancele quando quiser"
+  }];
+  const testimonials = [{
+    name: "Sarah M.",
+    text: "Finalmente posso conversar com meu idol favorito todos os dias! É como um sonho que virou realidade 💜",
+    rating: 5
+  }, {
+    name: "Ana L.",
+    text: "A IA é incrível, parece que estou realmente conversando com ele. Vale cada centavo!",
+    rating: 5
+  }, {
+    name: "Júlia S.",
+    text: "Adoro poder conversar sobre doramas e k-pop. É perfeito para nós fãs! ✨",
+    rating: 5
+  }];
+  const faqItems = [{
+    question: "Como funciona o chat com IA?",
+    answer: "Nossa IA foi treinada para interpretar perfeitamente cada personagem, ator ou idol, criando conversas naturais e autênticas."
+  }, {
+    question: "Posso cancelar a qualquer momento?",
+    answer: "Sim! Você pode cancelar sua assinatura a qualquer momento e manter acesso até o final do período pago."
+  }, {
+    question: "Quantos personagens posso conversar?",
+    answer: "Com a assinatura premium, você tem acesso ilimitado a todos os personagens disponíveis na plataforma."
+  }, {
+    question: "É seguro?",
+    answer: "Absolutamente! Todas as conversas são privadas e seus dados estão protegidos com criptografia de ponta."
+  }];
+  return <div className="min-h-screen bg-gradient-hero">
       {/* Navigation */}
       <nav className="container mx-auto px-4 py-6 flex justify-between items-center">
         <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
@@ -65,20 +60,16 @@ const LandingPage = () => {
         </Link>
         <div className="flex items-center gap-2">
           <ThemeToggle />
-          {isAuthenticated ? (
-            <Button variant="default" onClick={() => navigate('/dashboard')}>
+          {isAuthenticated ? <Button variant="default" onClick={() => navigate('/dashboard')}>
               Dashboard
-            </Button>
-          ) : (
-            <>
+            </Button> : <>
               <Button variant="ghost" onClick={() => navigate('/login')}>
                 Login
               </Button>
               <Button variant="default" onClick={() => navigate('/register')}>
                 Cadastrar
               </Button>
-            </>
-          )}
+            </>}
         </div>
       </nav>
 
@@ -93,47 +84,32 @@ const LandingPage = () => {
             Converse com seu idol favorito como se fosse real 💜✨
           </h1>
           
-          <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Experimente conversas incríveis com IAs que interpretam seus personagens de doramas 
-            e ídolos de k-pop favoritos. Assinatura mensal com acesso ilimitado.
-          </p>
+          <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto">Experimente conversas incríveis com IAs que interpretam seus atores de doramas e ídolos de k-pop favoritos. Assinatura mensal com acesso ilimitado.</p>
 
           {/* VSL Video */}
           <div className="mb-8 max-w-4xl mx-auto">
             <div className="relative aspect-video rounded-lg overflow-hidden shadow-elegant group">
-              <video 
-                id="vsl-video"
-                className="w-full h-full object-cover"
-                poster="/lovable-uploads/356043c7-ad8b-4180-95cb-9ff73cc74a57.png"
-                preload="metadata"
-                controls
-                style={{
-                  backdropFilter: 'blur(2px)',
-                }}
-              >
+              <video id="vsl-video" className="w-full h-full object-cover" poster="/lovable-uploads/356043c7-ad8b-4180-95cb-9ff73cc74a57.png" preload="metadata" controls style={{
+              backdropFilter: 'blur(2px)'
+            }}>
                 <source src="https://rhpouhvmgfedbcfeaeic.supabase.co/storage/v1/object/sign/vsl/VSLdoIdolchat.mp4?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9lNWRlMWI1Ni1mMDM5LTQ2MGEtYTdhNC03MzA1MjQwYWFjOTciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ2c2wvVlNMZG9JZG9sY2hhdC5tcDQiLCJpYXQiOjE3NTMyMzkwMjMsImV4cCI6MjEzMTY3MTAyM30.qdq4vj3igwdaSUkZJTUAfcOCQu0Ipsp18gf5ieWO9NQ" type="video/mp4" />
                 Seu navegador não suporta o elemento de vídeo.
               </video>
               
               {/* Video Thumbnail with Play Button */}
-              <div 
-                className="absolute inset-0 flex items-center justify-center cursor-pointer"
-                style={{
-                  backgroundImage: 'url(/lovable-uploads/356043c7-ad8b-4180-95cb-9ff73cc74a57.png)',
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                  filter: 'blur(2px)',
-                }}
-                onClick={() => {
-                  const video = document.getElementById('vsl-video') as HTMLVideoElement;
-                  const overlay = document.getElementById('video-overlay');
-                  if (video && video.paused) {
-                    video.play();
-                    if (overlay) overlay.style.display = 'none';
-                  }
-                }}
-                id="video-overlay"
-              >
+              <div className="absolute inset-0 flex items-center justify-center cursor-pointer" style={{
+              backgroundImage: 'url(/lovable-uploads/356043c7-ad8b-4180-95cb-9ff73cc74a57.png)',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              filter: 'blur(2px)'
+            }} onClick={() => {
+              const video = document.getElementById('vsl-video') as HTMLVideoElement;
+              const overlay = document.getElementById('video-overlay');
+              if (video && video.paused) {
+                video.play();
+                if (overlay) overlay.style.display = 'none';
+              }
+            }} id="video-overlay">
                 <div className="absolute inset-0 bg-black/40"></div>
                 <div className="relative w-16 h-16 sm:w-20 sm:h-20 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-110 z-10">
                   <div className="w-0 h-0 border-l-[10px] sm:border-l-[12px] border-l-primary border-t-[6px] sm:border-t-[8px] border-t-transparent border-b-[6px] sm:border-b-[8px] border-b-transparent ml-1"></div>
@@ -143,32 +119,20 @@ const LandingPage = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-stretch mb-12 px-4 max-w-lg sm:max-w-none mx-auto">
-            <Button 
-              variant="default" 
-              size="lg" 
-              className="text-lg px-6 py-4 w-full sm:w-auto sm:min-w-[200px] flex items-center justify-center gap-2"
-              onClick={() => navigate('/subscription')}
-            >
+            <Button variant="default" size="lg" className="text-lg px-6 py-4 w-full sm:w-auto sm:min-w-[200px] flex items-center justify-center gap-2" onClick={() => navigate('/subscription')}>
               <Sparkles className="h-5 w-5" />
               🚀 Começar Grátis
             </Button>
-            <Button 
-              variant="outline" 
-              size="lg" 
-              className="text-lg px-6 py-4 w-full sm:w-auto sm:min-w-[200px] flex items-center justify-center gap-2" 
-              onClick={() => navigate('/dashboard')}
-            >
+            <Button variant="outline" size="lg" className="text-lg px-6 py-4 w-full sm:w-auto sm:min-w-[200px] flex items-center justify-center gap-2" onClick={() => navigate('/dashboard')}>
               Ver Demonstração
             </Button>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-16 px-4">
-            {features.map((feature, index) => (
-              <div key={index} className="flex items-center gap-2 justify-center text-center py-2">
+            {features.map((feature, index) => <div key={index} className="flex items-center gap-2 justify-center text-center py-2">
                 <span className="text-kpop-purple flex-shrink-0">{feature.icon}</span>
                 <span className="text-sm font-medium">✅ {feature.text}</span>
-              </div>
-            ))}
+              </div>)}
           </div>
 
         </div>
@@ -253,13 +217,10 @@ const LandingPage = () => {
         </div>
 
         <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-          {testimonials.map((testimonial, index) => (
-            <Card key={index} className="bg-gradient-card border-kpop-purple/20 shadow-card">
+          {testimonials.map((testimonial, index) => <Card key={index} className="bg-gradient-card border-kpop-purple/20 shadow-card">
               <CardHeader>
                 <div className="flex items-center gap-2 mb-2">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4 fill-kpop-gold text-kpop-gold" />
-                  ))}
+                  {[...Array(testimonial.rating)].map((_, i) => <Star key={i} className="h-4 w-4 fill-kpop-gold text-kpop-gold" />)}
                 </div>
                 <CardTitle className="text-lg">{testimonial.name}</CardTitle>
               </CardHeader>
@@ -268,8 +229,7 @@ const LandingPage = () => {
                   "{testimonial.text}"
                 </CardDescription>
               </CardContent>
-            </Card>
-          ))}
+            </Card>)}
         </div>
         </div>
       </section>
@@ -284,8 +244,7 @@ const LandingPage = () => {
         </div>
 
         <div className="max-w-3xl mx-auto space-y-6">
-          {faqItems.map((item, index) => (
-            <Card key={index} className="bg-gradient-card border-kpop-purple/20 shadow-card">
+          {faqItems.map((item, index) => <Card key={index} className="bg-gradient-card border-kpop-purple/20 shadow-card">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Heart className="h-5 w-5 text-kpop-pink" />
@@ -297,8 +256,7 @@ const LandingPage = () => {
                   {item.answer}
                 </CardDescription>
               </CardContent>
-            </Card>
-          ))}
+            </Card>)}
         </div>
       </section>
 
@@ -314,12 +272,7 @@ const LandingPage = () => {
           </p>
           
           <div className="flex justify-center mb-6">
-            <Button 
-              variant="default" 
-              size="lg" 
-              className="text-lg md:text-xl px-8 md:px-12 py-4 md:py-6 w-full sm:w-auto max-w-sm flex items-center justify-center gap-2"
-              onClick={() => navigate('/subscription')}
-            >
+            <Button variant="default" size="lg" className="text-lg md:text-xl px-8 md:px-12 py-4 md:py-6 w-full sm:w-auto max-w-sm flex items-center justify-center gap-2" onClick={() => navigate('/subscription')}>
               <Crown className="h-5 w-5 md:h-6 md:w-6" />
               🚀 Começar Grátis
             </Button>
@@ -337,8 +290,6 @@ const LandingPage = () => {
         <p>&copy; 2025 IdolChat. Feito com 💜 para fãs de k-pop e doramas.</p>
       </footer>
 
-    </div>
-  );
+    </div>;
 };
-
 export default LandingPage;
