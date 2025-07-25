@@ -78,7 +78,7 @@ const ChatPage = () => {
   useEffect(() => {
     if (!authLoading && !subLoading) {
       if (!user) {
-        navigate('/auth');
+        navigate('/login');
         return;
       }
       // Allow access to Joon Park for all users (free model)
@@ -108,8 +108,8 @@ const ChatPage = () => {
       if (error) throw error;
 
       if (data && data.length > 0) {
-        const loadedMessages: Message[] = data.map(msg => ({
-          id: parseInt(msg.id.split('-')[0]),
+        const loadedMessages: Message[] = data.map((msg, index) => ({
+          id: Date.now() + index, // Use unique IDs to avoid key conflicts
           text: msg.message,
           sender: msg.sender as 'user' | 'idol',
           timestamp: new Date(msg.created_at),
@@ -119,7 +119,7 @@ const ChatPage = () => {
         // Load initial messages if no chat history
         const initialMessages: Message[] = [
           {
-            id: 1,
+            id: Date.now(),
             text: `Oi! Que bom te ver aqui! 💜 Como você está hoje?`,
             sender: 'idol',
             timestamp: new Date(Date.now() - 60000),

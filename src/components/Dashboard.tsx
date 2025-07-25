@@ -20,7 +20,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (!authLoading && !user) {
-      navigate('/auth');
+      navigate('/login');
     }
   }, [user, authLoading, navigate]);
 
@@ -198,10 +198,10 @@ const Dashboard = () => {
                     <AvatarFallback>{idol.name[0]}</AvatarFallback>
                   </Avatar>
                   
-                  {/* Status indicator */}
-                  <div className={`absolute -bottom-1 -right-1 w-6 h-6 rounded-full border-2 border-card ${
-                    idol.online ? 'bg-green-500' : 'bg-gray-400'
-                  }`} />
+                   {/* Status indicator */}
+                   <div className={`absolute -bottom-1 -right-1 w-6 h-6 rounded-full border-2 border-card ${
+                     (idol.status === "Online agora" || idol.isFree) ? 'bg-green-500' : 'bg-gray-400'
+                   }`} />
                   
                   {/* Lock overlay - não mostrar para Joon Park ou se tem premium */}
                   {!idol.isFree && !hasAccess(idol.plan) && (
@@ -246,15 +246,15 @@ const Dashboard = () => {
                 <Button 
                   variant={idol.isFree || hasAccess(idol.plan) ? "default" : "outline"} 
                   className="w-full group-hover:scale-105 transition-transform"
-                  onClick={() => handleChatClick(idol.id)}
-                  disabled={!idol.online}
+                   onClick={() => handleChatClick(idol.id)}
+                   disabled={!idol.isFree && idol.status === "Offline há 1h"}
                 >
                   {(!idol.isFree && !hasAccess(idol.plan)) ? (
                     <>
                       <Lock className="h-4 w-4 mr-2" />
                       Assinar para conversar
                     </>
-                  ) : !idol.online ? (
+                  ) : (!idol.isFree && idol.status === "Offline há 1h") ? (
                     <>
                       <MessageCircle className="h-4 w-4 mr-2" />
                       Offline
