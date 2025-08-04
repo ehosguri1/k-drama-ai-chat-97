@@ -3,7 +3,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Heart, MessageCircle, Star, Sparkles, Crown, Clock, Shield, Zap } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
+import { useNavigate } from "react-router-dom";
+
 const LandingPage = () => {
+  const navigate = useNavigate();
+  
   const features = [{
     icon: <MessageCircle className="h-5 w-5" />,
     text: "Converse 24/7"
@@ -17,6 +21,7 @@ const LandingPage = () => {
     icon: <Shield className="h-5 w-5" />,
     text: "Cancele quando quiser"
   }];
+  
   const testimonials = [{
     name: "Sarah M.",
     text: "Finalmente posso conversar com meu idol favorito todos os dias! É como um sonho que virou realidade 💜",
@@ -30,6 +35,7 @@ const LandingPage = () => {
     text: "Adoro poder conversar sobre doramas e k-pop. É perfeito para nós fãs! ✨",
     rating: 5
   }];
+  
   const faqItems = [{
     question: "Como funciona o chat com IA?",
     answer: "Nossa IA foi treinada para interpretar perfeitamente cada personagem, ator ou idol, criando conversas naturais e autênticas."
@@ -43,6 +49,7 @@ const LandingPage = () => {
     question: "É seguro?",
     answer: "Absolutamente! Todas as conversas são privadas e seus dados estão protegidos com criptografia de ponta."
   }];
+
   return <div className="min-h-screen bg-gradient-hero">
       {/* Navigation */}
         <nav className="container mx-auto px-4 py-6 flex justify-between items-center">
@@ -103,9 +110,9 @@ const LandingPage = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-stretch mb-12 px-4 max-w-lg sm:max-w-none mx-auto">
-            <Button variant="default" size="lg" className="text-lg px-6 py-4 w-full sm:w-auto sm:min-w-[200px] flex items-center justify-center gap-2" onClick={() => window.open('https://wa.me/5511999999999', '_blank')}>
+            <Button variant="default" size="lg" className="text-lg px-6 py-4 w-full sm:w-auto sm:min-w-[200px] flex items-center justify-center gap-2" onClick={() => navigate('/subscription')}>
               <Sparkles className="h-5 w-5" />
-              🚀 Entre em Contato
+              🚀 Começar Grátis
             </Button>
             <Button variant="outline" size="lg" className="text-lg px-6 py-4 w-full sm:w-auto sm:min-w-[200px] flex items-center justify-center gap-2" onClick={() => document.getElementById('vsl-video')?.scrollIntoView({ behavior: 'smooth' })}>
               Ver Demonstração
@@ -254,9 +261,9 @@ const LandingPage = () => {
           </p>
           
           <div className="flex justify-center mb-6">
-            <Button variant="default" size="lg" className="text-lg md:text-xl px-8 md:px-12 py-4 md:py-6 w-full sm:w-auto max-w-sm flex items-center justify-center gap-2" onClick={() => window.open('https://wa.me/5511999999999', '_blank')}>
+            <Button variant="default" size="lg" className="text-lg md:text-xl px-8 md:px-12 py-4 md:py-6 w-full sm:w-auto max-w-sm flex items-center justify-center gap-2" onClick={() => navigate('/subscription')}>
               <Crown className="h-5 w-5 md:h-6 md:w-6" />
-              🚀 Entre em Contato
+              🚀 Começar Grátis
             </Button>
           </div>
             
