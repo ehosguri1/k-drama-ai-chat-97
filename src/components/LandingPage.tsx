@@ -114,9 +114,6 @@ const LandingPage = () => {
               <Sparkles className="h-5 w-5" />
               🚀 Começar Grátis
             </Button>
-            <Button variant="outline" size="lg" className="text-lg px-6 py-4 w-full sm:w-auto sm:min-w-[200px] flex items-center justify-center gap-2" onClick={() => document.getElementById('vsl-video')?.scrollIntoView({ behavior: 'smooth' })}>
-              Ver Demonstração
-            </Button>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-16 px-4">

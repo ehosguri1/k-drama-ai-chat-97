@@ -57,10 +57,10 @@ const SubscriptionPage = () => {
       price: "R$ 24,90",
       period: "por mês",
       description: "Para fãs iniciantes",
-      badge: "🔥 Popular",
+      badge: null,
       color: "accent",
       features: [
-        { text: "50 mensagens por dia", included: true },
+        { text: "15 mensagens por dia", included: true },
         { text: "5 personagens disponíveis", included: true },
         { text: "IA avançada", included: true },
         { text: "Histórico de conversas", included: true },
@@ -105,7 +105,7 @@ const SubscriptionPage = () => {
   const getFeatureValue = (planId: string, featureIndex: number) => {
     const values = {
       free: ["3", "1", "Básica", "Limitado", "❌", "❌", "❌", "❌"],
-      basic: ["50", "5", "Avançada", "✅", "Básica", "❌", "❌", "❌"],
+      basic: ["15", "5", "Avançada", "✅", "Básica", "❌", "❌", "❌"],
       dorameira: ["Ilimitadas", "Todos", "Alta qualidade", "✅", "✅", "✅", "✅", "✅"]
     };
     return values[planId as keyof typeof values][featureIndex];
