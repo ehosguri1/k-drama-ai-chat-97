@@ -3,13 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Heart, MessageCircle, Star, Sparkles, Crown, Clock, Shield, Zap } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
-import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "@/hooks/useAuth";
 const LandingPage = () => {
-  const {
-    isAuthenticated
-  } = useAuth();
-  const navigate = useNavigate();
   const features = [{
     icon: <MessageCircle className="h-5 w-5" />,
     text: "Converse 24/7"
@@ -51,25 +45,15 @@ const LandingPage = () => {
   }];
   return <div className="min-h-screen bg-gradient-hero">
       {/* Navigation */}
-      <nav className="container mx-auto px-4 py-6 flex justify-between items-center">
-        <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+        <nav className="container mx-auto px-4 py-6 flex justify-between items-center">
+        <div className="flex items-center gap-2">
           <Crown className="h-8 w-8 text-kpop-purple" />
           <span className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
             IdolChat
           </span>
-        </Link>
+        </div>
         <div className="flex items-center gap-2">
           <ThemeToggle />
-          {isAuthenticated ? <Button variant="default" onClick={() => navigate('/dashboard')}>
-              Dashboard
-            </Button> : <>
-              <Button variant="ghost" onClick={() => navigate('/login')}>
-                Login
-              </Button>
-              <Button variant="default" onClick={() => navigate('/register')}>
-                Cadastrar
-              </Button>
-            </>}
         </div>
       </nav>
 
@@ -119,11 +103,11 @@ const LandingPage = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-stretch mb-12 px-4 max-w-lg sm:max-w-none mx-auto">
-            <Button variant="default" size="lg" className="text-lg px-6 py-4 w-full sm:w-auto sm:min-w-[200px] flex items-center justify-center gap-2" onClick={() => navigate('/subscription')}>
+            <Button variant="default" size="lg" className="text-lg px-6 py-4 w-full sm:w-auto sm:min-w-[200px] flex items-center justify-center gap-2" onClick={() => window.open('https://wa.me/5511999999999', '_blank')}>
               <Sparkles className="h-5 w-5" />
-              🚀 Começar Grátis
+              🚀 Entre em Contato
             </Button>
-            <Button variant="outline" size="lg" className="text-lg px-6 py-4 w-full sm:w-auto sm:min-w-[200px] flex items-center justify-center gap-2" onClick={() => navigate('/dashboard')}>
+            <Button variant="outline" size="lg" className="text-lg px-6 py-4 w-full sm:w-auto sm:min-w-[200px] flex items-center justify-center gap-2" onClick={() => document.getElementById('vsl-video')?.scrollIntoView({ behavior: 'smooth' })}>
               Ver Demonstração
             </Button>
           </div>
@@ -270,9 +254,9 @@ const LandingPage = () => {
           </p>
           
           <div className="flex justify-center mb-6">
-            <Button variant="default" size="lg" className="text-lg md:text-xl px-8 md:px-12 py-4 md:py-6 w-full sm:w-auto max-w-sm flex items-center justify-center gap-2" onClick={() => navigate('/subscription')}>
+            <Button variant="default" size="lg" className="text-lg md:text-xl px-8 md:px-12 py-4 md:py-6 w-full sm:w-auto max-w-sm flex items-center justify-center gap-2" onClick={() => window.open('https://wa.me/5511999999999', '_blank')}>
               <Crown className="h-5 w-5 md:h-6 md:w-6" />
-              🚀 Começar Grátis
+              🚀 Entre em Contato
             </Button>
           </div>
             
