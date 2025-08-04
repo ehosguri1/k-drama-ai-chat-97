@@ -15,27 +15,9 @@ const SubscriptionPage = () => {
   const { toast } = useToast();
 
   const handleSubscriptionClick = async (planId: string) => {
-    if (!isAuthenticated) {
-      navigate('/register');
-      return;
-    }
-    
     if (planId === 'free') {
-      // Create free plan subscription
-      const { error } = await createSubscription('free');
-      if (error) {
-        toast({
-          title: "Erro",
-          description: "Erro ao ativar plano gratuito. Tente novamente.",
-          variant: "destructive",
-        });
-        return;
-      }
-      toast({
-        title: "Plano ativado!",
-        description: "Seu plano gratuito foi ativado com sucesso!",
-      });
-      navigate('/dashboard');
+      // Redirect to test chat
+      navigate('/test-chat');
     } else {
       // For paid plans, redirect to checkout.com
       toast({

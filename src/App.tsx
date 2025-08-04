@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LandingPage from "./components/LandingPage";
 import SubscriptionPage from "./components/SubscriptionPage";
+import TestChat from "./components/TestChat";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -19,6 +20,7 @@ const App = () => {
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/subscription" element={<SubscriptionPage />} />
+            <Route path="/test-chat" element={<TestChat />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
